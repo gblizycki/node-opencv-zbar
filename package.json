@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/friverosicc/node-opencv-zbar.git"
+    "url": "git+https://github.com/gblizycki/node-opencv-zbar.git"
   },
   "keywords": [
     "Node",
@@ -19,9 +19,9 @@
   "author": "Francisco Riveros",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/friverosicc/node-opencv-zbar/issues"
+    "url": "https://github.com/gblizycki/node-opencv-zbar/issues"
   },
-  "homepage": "https://github.com/friverosicc/node-opencv-zbar#readme",
+  "homepage": "https://github.com/gblizycki/node-opencv-zbar#readme",
   "dependencies": {
     "nan": "^2.0.5",
     "underscore": "^1.8.3"

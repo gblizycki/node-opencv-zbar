@@ -20,11 +20,16 @@ class BarcodeReader : public AsyncProgressWorker {
 					Callback *progress,
 					char *cam_address,
 					int device_number,
-					int time_interval) :
+					int time_interval,
+					int camera_width,
+					int camera_height
+				):
 					AsyncProgressWorker(callback),
 					progress(progress),
 					cam_address(cam_address),
 					device_number(device_number),
+					camera_width(camera_width),
+					camera_height(camera_height),
 					time_interval(time_interval) {}
 
 	~BarcodeReader() {}
@@ -45,7 +50,11 @@ class BarcodeReader : public AsyncProgressWorker {
 			cout << "Could not open camera." << endl;
 			exit(EXIT_FAILURE);
 		}
-		cout << "Cam opened" << endl;
+		// cout << "Cam opened" << endl;
+		if(camera_width!=0)
+			cap.set(CV_CAP_PROP_FRAME_WIDTH, camera_width);
+		if(camera_height!=0)
+			cap.set(CV_CAP_PROP_FRAME_HEIGHT, camera_height);
 
 		// Create a zbar reader
 		ImageScanner scanner;
@@ -85,7 +94,7 @@ class BarcodeReader : public AsyncProgressWorker {
 					string new_barcode(data);
 
 					if(diff >= time_interval) {
-						progress.Send(reinterpret_cast<const char*>(data), sizeof(symbol->get_data()));
+						progress.Send(symbol->get_data().c_str(), symbol->get_data().length()+1);
 						last_barcode_decoded = new_barcode;
 					}
 				}
@@ -108,11 +117,13 @@ class BarcodeReader : public AsyncProgressWorker {
 		char *cam_address;
 		int device_number;
 		int time_interval;
+		int camera_width;
+		int camera_height;
 };
 
 NAN_METHOD(ReadData) {
-	Callback *progress = new Callback(info[2].As<v8::Function>());
-	Callback *callback = new Callback(info[3].As<v8::Function>());
+	Callback *progress = new Callback(info[4].As<v8::Function>());
+	Callback *callback = new Callback(info[5].As<v8::Function>());
 	char *address = new char[50];
 	int device_number = -1;
 
@@ -128,7 +139,10 @@ NAN_METHOD(ReadData) {
 		progress,
 		address,
 		device_number,
-		To<uint32_t>(info[1]).FromJust()));
+		To<uint32_t>(info[1]).FromJust(),
+		To<uint32_t>(info[2]).FromJust(),
+		To<uint32_t>(info[3]).FromJust()
+		));
 }
 
 NAN_MODULE_INIT(Init) {

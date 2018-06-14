@@ -11,13 +11,16 @@ var BarcoderReader = function() {
 	 * evaluate new barcodes
 	 * @param 'callback' Function called when barcode is captured
 	 */
-	function readData(address, time, callback) {
-		if(_.isFunction(time)) {
-			callback = time;
-			time = 0;
+	function readData(address, config, callback) {
+		if(_.isFunction(config)) {
+			callback = config;
+			config = {
+				time: 0,
+				width: 0,
+				height: 0
+			};
 		}
-
-		barcodeReader.readData(address, time, callback);
+		barcodeReader.readData(address, config.time, config.width, config.height, callback);
 	}
 
 	return {
